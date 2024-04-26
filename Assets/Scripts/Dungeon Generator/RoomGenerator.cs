@@ -11,7 +11,11 @@ public class RoomGenerator : MonoBehaviour
     public TileBase[] leftEdgeTiles;
     public TileBase[] rightEdgeTiles;
 
-    public Tilemap tilemap;
+    public Tilemap mainWallTilemap;
+    public Tilemap bottomEdgeTilemap;
+    public Tilemap topEdgeTilemap;
+    public Tilemap leftEdgeTilemap;
+    public Tilemap rightEdgeTilemap;
 
     public int minWidth = 5;
     public int maxWidth = 15;
@@ -31,70 +35,36 @@ public class RoomGenerator : MonoBehaviour
         roomWidth = Random.Range(minWidth, maxWidth + 1);
         roomHeight = Random.Range(minHeight, maxHeight + 1);
 
-        // Generate top and bottom walls
+        // Generate walls
         for (int x = 0; x < roomWidth; x++)
         {
-            TileBase topWallTile = mainWallTiles[Random.Range(0, mainWallTiles.Length)];
-            TileBase bottomWallTile = mainWallTiles[Random.Range(0, mainWallTiles.Length)];
-            tilemap.SetTile(new Vector3Int(x, roomHeight - 1, 0), topWallTile);
-            tilemap.SetTile(new Vector3Int(x, 0, 0), bottomWallTile);
-
-            // Draw green boxes around top and bottom walls
-            Debug.DrawLine(tilemap.CellToWorld(new Vector3Int(x, roomHeight - 1, 0)), tilemap.CellToWorld(new Vector3Int(x + 1, roomHeight - 1, 0)), Color.green, 100f);
-            Debug.DrawLine(tilemap.CellToWorld(new Vector3Int(x, 0, 0)), tilemap.CellToWorld(new Vector3Int(x + 1, 0, 0)), Color.green, 100f);
+            TileBase wallTile = mainWallTiles[Random.Range(0, mainWallTiles.Length)];
+            mainWallTilemap.SetTile(new Vector3Int(x, roomHeight - 1, 0), wallTile); // Top wall
+            mainWallTilemap.SetTile(new Vector3Int(x, 0, 0), wallTile); // Bottom wall
         }
 
-        // Generate left and right walls
-        for (int y = 1; y < roomHeight - 1; y++)
+        for (int y = 0; y < roomHeight; y++)
         {
-            TileBase leftWallTile = mainWallTiles[Random.Range(0, mainWallTiles.Length)];
-            TileBase rightWallTile = mainWallTiles[Random.Range(0, mainWallTiles.Length)];
-            tilemap.SetTile(new Vector3Int(0, y, 0), leftWallTile);
-            tilemap.SetTile(new Vector3Int(roomWidth - 1, y, 0), rightWallTile);
-
-            // Draw red boxes around left and right walls
-            Debug.DrawLine(tilemap.CellToWorld(new Vector3Int(0, y, 0)), tilemap.CellToWorld(new Vector3Int(0, y + 1, 0)), Color.red, 100f);
-            Debug.DrawLine(tilemap.CellToWorld(new Vector3Int(roomWidth - 1, y, 0)), tilemap.CellToWorld(new Vector3Int(roomWidth - 1, y + 1, 0)), Color.red, 100f);
+            TileBase wallTile = mainWallTiles[Random.Range(0, mainWallTiles.Length)];
+            mainWallTilemap.SetTile(new Vector3Int(0, y, 0), wallTile); // Left wall
+            mainWallTilemap.SetTile(new Vector3Int(roomWidth - 1, y, 0), wallTile); // Right wall
         }
 
-        // Place bottom edges
-        for (int x = 0; x < roomWidth; x++)
-        {
-            TileBase bottomEdgeTile = bottomEdgeTiles[Random.Range(0, bottomEdgeTiles.Length)];
-            tilemap.SetTile(new Vector3Int(x, 1, 0), bottomEdgeTile);
-
-            // Draw blue boxes around bottom edges
-            Debug.DrawLine(tilemap.CellToWorld(new Vector3Int(x, 1, 0)), tilemap.CellToWorld(new Vector3Int(x + 1, 1, 0)), Color.blue, 100f);
-        }
-
-        // Place top edges
+        // Generate edges adjacent to walls, outside of the main walls
         for (int x = 0; x < roomWidth; x++)
         {
             TileBase topEdgeTile = topEdgeTiles[Random.Range(0, topEdgeTiles.Length)];
-            tilemap.SetTile(new Vector3Int(x, roomHeight - 2, 0), topEdgeTile);
-
-            // Draw yellow boxes around top edges
-            Debug.DrawLine(tilemap.CellToWorld(new Vector3Int(x, roomHeight - 2, 0)), tilemap.CellToWorld(new Vector3Int(x + 1, roomHeight - 2, 0)), Color.yellow, 100f);
+            TileBase bottomEdgeTile = bottomEdgeTiles[Random.Range(0, bottomEdgeTiles.Length)];
+            topEdgeTilemap.SetTile(new Vector3Int(x, roomHeight, 0), topEdgeTile); // Above top wall
+            bottomEdgeTilemap.SetTile(new Vector3Int(x, -1, 0), bottomEdgeTile); // Below bottom wall
         }
 
-        // Place left edges
-        for (int y = 1; y < roomHeight - 1; y++)
+        for (int y = 0; y < roomHeight; y++)
         {
             TileBase leftEdgeTile = leftEdgeTiles[Random.Range(0, leftEdgeTiles.Length)];
-            tilemap.SetTile(new Vector3Int(1, y, 0), leftEdgeTile);
-
-            // Draw blue boxes around left edges
-            Debug.DrawLine(tilemap.CellToWorld(new Vector3Int(1, y, 0)), tilemap.CellToWorld(new Vector3Int(1, y + 1, 0)), Color.blue, 100f);
-        }
-
-        // Place right edges
-        for (int y = 1; y < roomHeight - 1; y++)
-        {
             TileBase rightEdgeTile = rightEdgeTiles[Random.Range(0, rightEdgeTiles.Length)];
-            tilemap.SetTile(new Vector3Int(roomWidth - 2, y, 0), rightEdgeTile);
-
-            // Draw yellow boxes around right edges
-            Debug.DrawLine(tilemap.CellToWorld(new Vector3Int(roomWidth - 2, y, 0)), tilemap.CellToWorld(new Vector3Int(roomWidth - 2, y + 1, 0)), Color.yellow, 100f);
+            leftEdgeTilemap.SetTile(new Vector3Int(-1, y, 0), leftEdgeTile); // Left of left wall
+            rightEdgeTilemap.SetTile(new Vector3Int(roomWidth, y, 0), rightEdgeTile); // Right of right wall
         }
     }
 }
