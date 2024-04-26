@@ -50,21 +50,22 @@ public class RoomGenerator : MonoBehaviour
             mainWallTilemap.SetTile(new Vector3Int(roomWidth - 1, y, 0), wallTile); // Right wall
         }
 
-        // Generate edges adjacent to walls, outside of the main walls
+        // Generate edges adjacent to walls, adjusted for new positions
         for (int x = 0; x < roomWidth; x++)
         {
             TileBase topEdgeTile = topEdgeTiles[Random.Range(0, topEdgeTiles.Length)];
             TileBase bottomEdgeTile = bottomEdgeTiles[Random.Range(0, bottomEdgeTiles.Length)];
-            topEdgeTilemap.SetTile(new Vector3Int(x, roomHeight, 0), topEdgeTile); // Above top wall
-            bottomEdgeTilemap.SetTile(new Vector3Int(x, -1, 0), bottomEdgeTile); // Below bottom wall
+            topEdgeTilemap.SetTile(new Vector3Int(x, roomHeight - 2, 0), topEdgeTile); // Below top wall
+            bottomEdgeTilemap.SetTile(new Vector3Int(x, 1, 0), bottomEdgeTile); // Above bottom wall
         }
 
         for (int y = 0; y < roomHeight; y++)
         {
             TileBase leftEdgeTile = leftEdgeTiles[Random.Range(0, leftEdgeTiles.Length)];
             TileBase rightEdgeTile = rightEdgeTiles[Random.Range(0, rightEdgeTiles.Length)];
-            leftEdgeTilemap.SetTile(new Vector3Int(-1, y, 0), leftEdgeTile); // Left of left wall
-            rightEdgeTilemap.SetTile(new Vector3Int(roomWidth, y, 0), rightEdgeTile); // Right of right wall
+            leftEdgeTilemap.SetTile(new Vector3Int(1, y, 0), leftEdgeTile); // Right of left wall
+            rightEdgeTilemap.SetTile(new Vector3Int(roomWidth - 2, y, 0), rightEdgeTile); // Left of right wall
         }
     }
+
 }
